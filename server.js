@@ -5,7 +5,7 @@ const uri = "mongodb+srv://nandit123:mehra123@cluster0.nj3nz.mongodb.net/db1?ret
 const app = express();
 app.use(express.json())
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.listen(port, function (err) {
   if (err) console.log(err);
