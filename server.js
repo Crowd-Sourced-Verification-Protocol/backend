@@ -32,12 +32,52 @@ app.post('/addRating', (req, res) => {
       let ratingDocument = {
         userId: req.body.userId,
         url: req.body.url,
-        rating: req.body.rating
+        rating: req.body.rating,
+        type: 'rating'
       };
 
       // insert a single document, wait for promise  so we can read it back
       const p = await col.insertOne(ratingDocument);
-      
+
+      // find one document
+      const myDoc = await col.findOne();
+
+      // print to the console
+      console.log('mydoc:', myDoc);
+    } catch (e) {
+      console.log('got an error:', e);
+    } finally {
+      await client.close();
+    }
+  }
+  run();
+  res.send('done')
+})
+
+app.post('/addReport', (req, res) => {
+  console.log('entered addReport with parameters: ', req.body);
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  async function run() {
+    try {
+      console.log('entered try block');
+      await client.connect();
+      console.log('connected correctly to the server');
+
+      const db = client.db("db1");
+
+      const col = db.collection("cl1");
+
+      let reportDocument = {
+        userId: req.body.userId,
+        url: req.body.url,
+        reportReason: req.body.reportReason, 
+        reasonType: req.body.reasonType, // 1-5 for checkbox reason, 6 for manually written by the user
+        type: "report"
+      };
+
+      // insert a single document, wait for promise  so we can read it back
+      const p = await col.insertOne(reportDocument);
+
       // find one document
       const myDoc = await col.findOne();
 
