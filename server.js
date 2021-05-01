@@ -143,4 +143,76 @@ app.get('/getRating', (req, res) => {
   run();
 })
 
+app.post('/addUser', (req, res) => {
+  console.log('entered addUser with parameters: ', req.body);
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  async function run() {
+    try {
+      console.log('entered try block');
+      await client.connect();
+      console.log('connected correctly to the server');
+
+      const db = client.db("db1");
+
+      const col = db.collection("user");
+
+      let userDocument = {
+        userId: req.body.userId,
+        balance: 0,
+        walletAddress: '',
+        timeCreated: Date.now()
+      };
+
+      // insert a single document, wait for promise  so we can read it back
+      const p = await col.insertOne(userDocument);
+
+      // find one document
+      const myDoc = await col.findOne();
+
+      // print to the console
+      console.log('mydoc:', myDoc);
+    } catch (e) {
+      console.log('got an error:', e);
+    } finally {
+      await client.close();
+    }
+  }
+  run();
+  res.send('done')
+})
+
+app.get('/getUser', (req, res) => {
+  console.log('entered getRating with parameters: ', req.body);
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  async function run() {
+    try {
+      console.log('entered try block');
+      await client.connect();
+      console.log('connected correctly to the server');
+
+      const db = client.db("db1");
+
+      const col = db.collection("user");
+
+      const query = { userId: req.body.userId };
+
+      const user = await col.findOne(query);
+      console.log('user recieved:', user);
+
+      res.send({
+        userId: user.userId,
+        balance: user.balance,
+        walletAddress: user.walletAddress,
+        timeCreated: user.timeCreated
+      })
+    } catch (e) {
+      console.log('got an error:', e);
+      res.send('error:', e)
+    } finally {
+      await client.close();
+    }
+  }
+  run();
+})
+
 console.log('restfulAPI started at port', port);
