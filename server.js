@@ -1,6 +1,6 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://nandit123:mehra123@cluster0.nj3nz.mongodb.net/db1?retryWrites=true&w=majority";
+const uri = "mongodb+srv://nandit123:<password>@cluster0.nj3nz.mongodb.net/db1?retryWrites=true&w=majority";
 
 const app = express();
 app.use(express.json())
